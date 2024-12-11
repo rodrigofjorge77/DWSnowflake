@@ -4,6 +4,7 @@ from airflow.providers.snowflake.hooks.snowflake import SnowflakeHook
 from airflow.operators.python_operator import PythonOperator
 from airflow.providers.snowflake.operators.snowflake import SnowflakeOperator
 from datetime import datetime
+from airflow.operators.dummy_operator import DummyOperator
 
 default_args = {
     'owner': 'airflow',
@@ -106,6 +107,120 @@ def extract_TableOrdersDetails():
     """
     snowflake_hook.insert_rows('DW.BRONZE.ORDER_DETAILS', snowflake_data)
 
+def extract_TableProducts():
+    # Conexão PostgreSQL
+    postgres_hook = PostgresHook(postgres_conn_id='postgres_conn_id')
+    sql_query = "SELECT PRODUCT_ID, PRODUCT_NAME, SUPPLIER_ID, CATEGORY_ID, QUANTITY_PER_UNIT, UNIT_PRICE, UNITS_IN_STOCK, UNITS_ON_ORDER, REORDER_LEVEL, DISCONTINUED FROM PRODUCTS"
+    records = postgres_hook.get_records(sql_query)
+
+    # Preparar dados para inserção no Snowflake
+    snowflake_data = [
+        (row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8], row[9], datetime.now()) for row in records
+    ]
+    
+    # Conexão Snowflake
+    snowflake_hook = SnowflakeHook(snowflake_conn_id='snowflake_conn_id')
+    insert_query = """
+        INSERT INTO DW.BRONZE.PRODUCTS (PRODUCT_ID, PRODUCT_NAME, SUPPLIER_ID, CATEGORY_ID, QUANTITY_PER_UNIT, UNIT_PRICE, UNITS_IN_STOCK, UNITS_ON_ORDER, REORDER_LEVEL, DISCONTINUED, DATA_EXTRACAO)
+        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s )
+    """
+    snowflake_hook.insert_rows('DW.BRONZE.PRODUCTS', snowflake_data)
+
+def extract_TableRegion():
+    # Conexão PostgreSQL
+    postgres_hook = PostgresHook(postgres_conn_id='postgres_conn_id')
+    sql_query = "SELECT region_id, region_description FROM region"
+    records = postgres_hook.get_records(sql_query)
+
+    # Preparar dados para inserção no Snowflake
+    snowflake_data = [
+        (row[0], row[1],  datetime.now()) for row in records
+    ]
+    
+    # Conexão Snowflake
+    snowflake_hook = SnowflakeHook(snowflake_conn_id='snowflake_conn_id')
+    insert_query = """
+        INSERT INTO DW.BRONZE.PRODUCTS (REGION_ID, REGION_DESCRIPTION, DATA_EXTRACAO)
+        VALUES (%s, %s, %s  )
+    """
+    snowflake_hook.insert_rows('DW.BRONZE.REGION', snowflake_data)
+
+def extract_TableShippers():
+    # Conexão PostgreSQL
+    postgres_hook = PostgresHook(postgres_conn_id='postgres_conn_id')
+    sql_query = "SELECT SHIPPER_ID, COMPANY_NAME, PHONE FROM SHIPPERS"
+    records = postgres_hook.get_records(sql_query)
+
+    # Preparar dados para inserção no Snowflake
+    snowflake_data = [
+        (row[0], row[1], row[2], datetime.now()) for row in records
+    ]
+    
+    # Conexão Snowflake
+    snowflake_hook = SnowflakeHook(snowflake_conn_id='snowflake_conn_id')
+    insert_query = """
+        INSERT INTO DW.BRONZE.SHIPPERS (SHIPPER_ID, COMPANY_NAME, PHONE, DATA_EXTRACAO)
+        VALUES (%s, %s, %s, %s  )
+    """
+    snowflake_hook.insert_rows('DW.BRONZE.SHIPPERS', snowflake_data)
+
+def extract_TableSuppliers():
+    # Conexão PostgreSQL
+    postgres_hook = PostgresHook(postgres_conn_id='postgres_conn_id')
+    sql_query = "SELECT SUPPLIER_ID, COMPANY_NAME, CONTACT_NAME, CONTACT_TITLE, ADDRESS, CITY, REGION, POSTAL_CODE, COUNTRY, PHONE, FAX, HOMEPAGE FROM SUPPLIERS"
+    records = postgres_hook.get_records(sql_query)
+
+    # Preparar dados para inserção no Snowflake
+    snowflake_data = [
+        (row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8], row[9], row[10], row[11],datetime.now()) for row in records
+    ]
+    
+    # Conexão Snowflake
+    snowflake_hook = SnowflakeHook(snowflake_conn_id='snowflake_conn_id')
+    insert_query = """
+        INSERT INTO DW.BRONZE.SUPPLIERS (SUPPLIER_ID, COMPANY_NAME, CONTACT_NAME, CONTACT_TITLE, ADDRESS, CITY, REGION, POSTAL_CODE, COUNTRY, PHONE, FAX, HOMEPAGE, DATA_EXTRACAO)
+        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s  )
+    """
+    snowflake_hook.insert_rows('DW.BRONZE.SUPPLIERS', snowflake_data)
+
+def extract_TableTerritories():
+    # Conexão PostgreSQL
+    postgres_hook = PostgresHook(postgres_conn_id='postgres_conn_id')
+    sql_query = "SELECT territory_id, territory_description, region_id FROM territories"
+    records = postgres_hook.get_records(sql_query)
+
+    # Preparar dados para inserção no Snowflake
+    snowflake_data = [
+        (row[0], row[1], row[2], datetime.now()) for row in records
+    ]
+    
+    # Conexão Snowflake
+    snowflake_hook = SnowflakeHook(snowflake_conn_id='snowflake_conn_id')
+    insert_query = """
+        INSERT INTO DW.BRONZE.TERRITORIES (TERRITORY_ID, TERRITORY_DESCRIPTION, REGION_ID, DATA_EXTRACAO)
+        VALUES (%s, %s, %s, %s )
+    """
+    snowflake_hook.insert_rows('DW.BRONZE.TERRITORIES', snowflake_data)
+
+def extract_TableEmployeeTerritories():
+    # Conexão PostgreSQL
+    postgres_hook = PostgresHook(postgres_conn_id='postgres_conn_id')
+    sql_query = "SELECT EMPLOYEE_ID, TERRITORY_ID FROM EMPLOYEE_TERRITORIES"
+    records = postgres_hook.get_records(sql_query)
+
+    # Preparar dados para inserção no Snowflake
+    snowflake_data = [
+        (row[0], row[1], datetime.now()) for row in records
+    ]
+    
+    # Conexão Snowflake
+    snowflake_hook = SnowflakeHook(snowflake_conn_id='snowflake_conn_id')
+    insert_query = """
+        INSERT INTO DW.BRONZE.EMPLOYEE_TERRITORIES (EMPLOYEE_ID, TERRITORY_ID, DATA_EXTRACAO)
+        VALUES (%s, %s, %s)
+    """
+    snowflake_hook.insert_rows('DW.BRONZE.EMPLOYEE_TERRITORIES', snowflake_data)
+
 with DAG(
     'postgres_to_snowflake',
     default_args=default_args,
@@ -120,16 +235,6 @@ with DAG(
 	CATEGORY_ID NUMBER(38,0) NOT NULL,
 	CATEGORY_NAME VARCHAR(15) NOT NULL,
 	DESCRIPTION VARCHAR(16777216),
-	DATA_EXTRACAO DATE
-    );
-    create TABLE IF NOT EXISTS DW.BRONZE.CUSTOMER_CUSTOMER_DEMO (
-	CUSTOMER_ID VARCHAR(5) NOT NULL,
-	CUSTOMER_TYPE_ID VARCHAR(5) NOT NULL,
-	DATA_EXTRACAO DATE
-    );
-    create TABLE IF NOT EXISTS  DW.BRONZE.CUSTOMER_DEMOGRAPHICS (
-	CUSTOMER_TYPE_ID VARCHAR(5) NOT NULL,
-	CUSTOMER_DESC VARCHAR(16777216),
 	DATA_EXTRACAO DATE
     );
     create TABLE IF NOT EXISTS  DW.BRONZE.CUSTOMERS (
@@ -263,38 +368,74 @@ with DAG(
         snowflake_conn_id='snowflake_conn_id',  # Conexão configurada no Airflow
         sql=create_sql,
     )
-
-    # Task para executar os comandos no Snowflake
+    
     Truncate_Tables = SnowflakeOperator(
-        task_id='Truncate_Tables',
-        snowflake_conn_id='snowflake_conn_id',  # Conexão configurada no Airflow
-        sql=truncate_sql,
+       task_id='Truncate_Tables',
+       snowflake_conn_id='snowflake_conn_id',  # Conexão configurada no Airflow
+       sql=truncate_sql,
     )
 
     Get_Data_Caterogies = PythonOperator(
-        task_id='Get_Data_Caterogies',
-        python_callable=extract_TableCaterogies
+       task_id='Get_Data_Caterogies',
+       python_callable=extract_TableCaterogies
     )
     
     Get_Data_Customers = PythonOperator(
-        task_id='Get_Data_Customers',
-        python_callable=extract_TableCustomers
+       task_id='Get_Data_Customers',
+       python_callable=extract_TableCustomers
     )
 
     Get_Data_Employees = PythonOperator(
-        task_id='Get_Data_Employees',
-        python_callable=extract_TableEmployees
+       task_id='Get_Data_Employees',
+       python_callable=extract_TableEmployees
     )
 
     Get_Data_Orders = PythonOperator(
-        task_id='Get_Data_Orders',
-        python_callable=extract_TableOrders
+       task_id='Get_Data_Orders',
+       python_callable=extract_TableOrders
     )
     
     Get_Data_OrdersDetails = PythonOperator(
-        task_id='Get_Data_OrdersDetails',
-        python_callable=extract_TableOrdersDetails
+       task_id='Get_Data_OrdersDetails',
+       python_callable=extract_TableOrdersDetails
     )
 
-    Create_Tables >> Truncate_Tables >> Get_Data_Caterogies >> Get_Data_Customers >> Get_Data_Employees >> Get_Data_Orders >> Get_Data_OrdersDetails
+    Get_Data_Products = PythonOperator(
+        task_id='Get_Data_Products',
+        python_callable=extract_TableProducts
+    )
 
+    Get_Data_Region = PythonOperator(
+        task_id='Get_Data_Region',
+        python_callable=extract_TableRegion
+    )
+
+    Get_Data_Shippers = PythonOperator(
+        task_id='Get_Data_Shippers',
+        python_callable=extract_TableShippers
+    )
+
+    Get_Data_Territories = PythonOperator(
+        task_id='Get_Data_Territories',
+        python_callable=extract_TableTerritories
+    )
+
+    Get_Data_EmployeeTerritories = PythonOperator(
+        task_id='Get_Data_EmployeeTerritories',
+        python_callable=extract_TableEmployeeTerritories
+    )
+
+    Get_Data_Suppliers = PythonOperator(
+        task_id='Get_Data_Suppliers',
+        python_callable=extract_TableSuppliers
+    )
+
+    # Ponto de sincronização (aguardar os 3)
+    wait1 = DummyOperator(task_id='wait1', trigger_rule='all_success')
+    wait2 = DummyOperator(task_id='wait2', trigger_rule='all_success')
+    wait3 = DummyOperator(task_id='wait3', trigger_rule='all_success')
+
+    Create_Tables >> Truncate_Tables >> [Get_Data_Caterogies,Get_Data_Customers,Get_Data_Employees] >> wait1 >> [Get_Data_Orders,Get_Data_OrdersDetails,Get_Data_Products] >> wait2 >> [Get_Data_Region,Get_Data_Shippers,Get_Data_Suppliers] >> wait3 >> [Get_Data_Territories,Get_Data_EmployeeTerritories]
+    
+    
+    
