@@ -10,7 +10,7 @@ DECLARE
 BEGIN
 
     CREATE TABLE IF NOT EXISTS DW.GOLD.DIM_TEMPO (
-        ID_DIM_TEMPO NUMBER AUTOINCREMENT , -- Serial substituído por AUTOINCREMENT
+        SK_DATA NUMBER AUTOINCREMENT , -- Serial substituído por AUTOINCREMENT
         DATA DATE NOT NULL,
         ANO NUMBER(4,0) NOT NULL, -- Número de 4 dígitos para o ano
         MES NUMBER(2,0) NOT NULL, -- Número de 2 dígitos para o mês

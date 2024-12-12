@@ -440,20 +440,20 @@ with DAG(
         sql=silver_procedures,
     )
 
-    Gold_Dim_Full_Data = SnowflakeOperator(
-        task_id='Gold_Dim_Full_Data',
+    Gold_Full_Dim_Data = SnowflakeOperator(
+        task_id='Gold_Full_Dim_Data',
         snowflake_conn_id='snowflake_conn_id',  # Conexão configurada no Airflow
-        sql="CALL DW.GOLD.PROC_DIM_TEMPO('1996-07-01', '1998-05-31');",
+        sql="CALL DW.GOLD.PROC_DIM_TEMPO('1996-01-01', '1998-12-31');",
     )
 
-    Gold_Dim_Full_Customers = SnowflakeOperator(
-        task_id='Gold_Dim_Full_Customers',
+    Gold_Full_Dim_Customers = SnowflakeOperator(
+        task_id='Gold_Full_Dim_Customers',
         snowflake_conn_id='snowflake_conn_id',  # Conexão configurada no Airflow
         sql='CALL DW.GOLD.PROC_DIM_CUSTOMER();',
     )
 
-    Gold_Dim_Full_Products = SnowflakeOperator(
-        task_id='Gold_Dim_Full_Products',
+    Gold_Full_Dim_Products = SnowflakeOperator(
+        task_id='Gold_Full_Dim_Products',
         snowflake_conn_id='snowflake_conn_id',  # Conexão configurada no Airflow
         sql='CALL DW.GOLD.PROC_DIM_PRODUCTS();',
     )
@@ -465,7 +465,7 @@ with DAG(
     #wait4 = DummyOperator(task_id='wait4', trigger_rule='all_success')
 
     #Bronze_Full_Load >>  [Get_Data_Caterogies,Get_Data_Customers,Get_Data_Employees] >> wait1 >> [Get_Data_Orders,Get_Data_OrdersDetails,Get_Data_Products] >> wait2 >> [Get_Data_Region,Get_Data_Shippers,Get_Data_Suppliers] >> wait3 >> [Get_Data_Territories,Get_Data_EmployeeTerritories] >> Silver_Full_Load >> wait4 >> [Gold_Dim_Data,Gold_Dim_Customers,Gold_Dim_Products]
-    Bronze_Full_Load >>  [Get_Data_Caterogies,Get_Data_Customers,Get_Data_Employees,Get_Data_Orders,Get_Data_OrdersDetails,Get_Data_Products] >> wait1 >> [Get_Data_Region,Get_Data_Shippers,Get_Data_Suppliers,Get_Data_Territories,Get_Data_EmployeeTerritories] >> wait2 >> Silver_Full_Load >> [Gold_Dim_Full_Data,Gold_Dim_Full_Customers,Gold_Dim_Full_Products]
+    Bronze_Full_Load >>  [Get_Data_Caterogies,Get_Data_Customers,Get_Data_Employees,Get_Data_Orders,Get_Data_OrdersDetails,Get_Data_Products] >> wait1 >> [Get_Data_Region,Get_Data_Shippers,Get_Data_Suppliers,Get_Data_Territories,Get_Data_EmployeeTerritories] >> wait2 >> Silver_Full_Load >> [Gold_Full_Dim_Data,Gold_Full_Dim_Customers,Gold_Full_Dim_Products]
     
     
     
