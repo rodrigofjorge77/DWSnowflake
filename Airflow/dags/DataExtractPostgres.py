@@ -361,81 +361,102 @@ with DAG(
     TRUNCATE TABLE DW.BRONZE.SHIPPERS;
     TRUNCATE TABLE DW.BRONZE.SUPPLIERS;
     TRUNCATE TABLE DW.BRONZE.TERRITORIES;
+    """    
+
+    silver_procedures = """
+    CALL DW.SILVER.SILVER_CATEGORIES();
+    CALL DW.SILVER.SILVER_CUSTOMERS();
+    CALL DW.SILVER.SILVER_EMPLOYEES();
+    CALL DW.SILVER.SILVER_EMPLOYEE_TERRITORIES();
+    CALL DW.SILVER.SILVER_ORDERDETAILS();
+    CALL DW.SILVER.SILVER_ORDERS();
+    CALL DW.SILVER.SILVER_PRODUCTS();
+    CALL DW.SILVER.SILVER_REGION();
+    CALL DW.SILVER.SILVER_SHIPPERS();
+    CALL DW.SILVER.SILVER_SUPPLIERS();
+    CALL DW.SILVER.SILVER_TERRITORIES();
     """
 
-    Create_Tables = SnowflakeOperator(
-        task_id='Create_Tables',
+    # Create_Tables = SnowflakeOperator(
+    #     task_id='Create_Tables',
+    #     snowflake_conn_id='snowflake_conn_id',  # Conexão configurada no Airflow
+    #     sql=create_sql,
+    # )
+    
+    # Truncate_Tables = SnowflakeOperator(
+    #    task_id='Truncate_Tables',
+    #    snowflake_conn_id='snowflake_conn_id',  # Conexão configurada no Airflow
+    #    sql=truncate_sql,
+    # )
+
+    # Get_Data_Caterogies = PythonOperator(
+    #    task_id='Get_Data_Caterogies',
+    #    python_callable=extract_TableCaterogies
+    # )
+    
+    # Get_Data_Customers = PythonOperator(
+    #    task_id='Get_Data_Customers',
+    #    python_callable=extract_TableCustomers
+    # )
+
+    # Get_Data_Employees = PythonOperator(
+    #    task_id='Get_Data_Employees',
+    #    python_callable=extract_TableEmployees
+    # )
+
+    # Get_Data_Orders = PythonOperator(
+    #    task_id='Get_Data_Orders',
+    #    python_callable=extract_TableOrders
+    # )
+    
+    # Get_Data_OrdersDetails = PythonOperator(
+    #    task_id='Get_Data_OrdersDetails',
+    #    python_callable=extract_TableOrdersDetails
+    # )
+
+    # Get_Data_Products = PythonOperator(
+    #     task_id='Get_Data_Products',
+    #     python_callable=extract_TableProducts
+    # )
+
+    # Get_Data_Region = PythonOperator(
+    #     task_id='Get_Data_Region',
+    #     python_callable=extract_TableRegion
+    # )
+
+    # Get_Data_Shippers = PythonOperator(
+    #     task_id='Get_Data_Shippers',
+    #     python_callable=extract_TableShippers
+    # )
+
+    # Get_Data_Territories = PythonOperator(
+    #     task_id='Get_Data_Territories',
+    #     python_callable=extract_TableTerritories
+    # )
+
+    # Get_Data_EmployeeTerritories = PythonOperator(
+    #     task_id='Get_Data_EmployeeTerritories',
+    #     python_callable=extract_TableEmployeeTerritories
+    # )
+
+    # Get_Data_Suppliers = PythonOperator(
+    #     task_id='Get_Data_Suppliers',
+    #     python_callable=extract_TableSuppliers
+    # )
+
+    silver_layer = SnowflakeOperator(
+        task_id='silver_layer',
         snowflake_conn_id='snowflake_conn_id',  # Conexão configurada no Airflow
-        sql=create_sql,
-    )
-    
-    Truncate_Tables = SnowflakeOperator(
-       task_id='Truncate_Tables',
-       snowflake_conn_id='snowflake_conn_id',  # Conexão configurada no Airflow
-       sql=truncate_sql,
+        sql='CALL DW.SILVER.SILVER_CATEGORIES();',
     )
 
-    Get_Data_Caterogies = PythonOperator(
-       task_id='Get_Data_Caterogies',
-       python_callable=extract_TableCaterogies
-    )
-    
-    Get_Data_Customers = PythonOperator(
-       task_id='Get_Data_Customers',
-       python_callable=extract_TableCustomers
-    )
+    # # Ponto de sincronização (aguardar os 3)
+    # wait1 = DummyOperator(task_id='wait1', trigger_rule='all_success')
+    # wait2 = DummyOperator(task_id='wait2', trigger_rule='all_success')
+    # wait3 = DummyOperator(task_id='wait3', trigger_rule='all_success')
 
-    Get_Data_Employees = PythonOperator(
-       task_id='Get_Data_Employees',
-       python_callable=extract_TableEmployees
-    )
-
-    Get_Data_Orders = PythonOperator(
-       task_id='Get_Data_Orders',
-       python_callable=extract_TableOrders
-    )
-    
-    Get_Data_OrdersDetails = PythonOperator(
-       task_id='Get_Data_OrdersDetails',
-       python_callable=extract_TableOrdersDetails
-    )
-
-    Get_Data_Products = PythonOperator(
-        task_id='Get_Data_Products',
-        python_callable=extract_TableProducts
-    )
-
-    Get_Data_Region = PythonOperator(
-        task_id='Get_Data_Region',
-        python_callable=extract_TableRegion
-    )
-
-    Get_Data_Shippers = PythonOperator(
-        task_id='Get_Data_Shippers',
-        python_callable=extract_TableShippers
-    )
-
-    Get_Data_Territories = PythonOperator(
-        task_id='Get_Data_Territories',
-        python_callable=extract_TableTerritories
-    )
-
-    Get_Data_EmployeeTerritories = PythonOperator(
-        task_id='Get_Data_EmployeeTerritories',
-        python_callable=extract_TableEmployeeTerritories
-    )
-
-    Get_Data_Suppliers = PythonOperator(
-        task_id='Get_Data_Suppliers',
-        python_callable=extract_TableSuppliers
-    )
-
-    # Ponto de sincronização (aguardar os 3)
-    wait1 = DummyOperator(task_id='wait1', trigger_rule='all_success')
-    wait2 = DummyOperator(task_id='wait2', trigger_rule='all_success')
-    wait3 = DummyOperator(task_id='wait3', trigger_rule='all_success')
-
-    Create_Tables >> Truncate_Tables >> [Get_Data_Caterogies,Get_Data_Customers,Get_Data_Employees] >> wait1 >> [Get_Data_Orders,Get_Data_OrdersDetails,Get_Data_Products] >> wait2 >> [Get_Data_Region,Get_Data_Shippers,Get_Data_Suppliers] >> wait3 >> [Get_Data_Territories,Get_Data_EmployeeTerritories]
+    #Create_Tables >> Truncate_Tables >> [Get_Data_Caterogies,Get_Data_Customers,Get_Data_Employees] >> wait1 >> [Get_Data_Orders,Get_Data_OrdersDetails,Get_Data_Products] >> wait2 >> [Get_Data_Region,Get_Data_Shippers,Get_Data_Suppliers] >> wait3 >> [Get_Data_Territories,Get_Data_EmployeeTerritories] >> silver_layer
+    silver_layer
     
     
     

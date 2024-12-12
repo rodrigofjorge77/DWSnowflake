@@ -1,0 +1,48 @@
+USE SCHEMA DW.SILVER;
+
+CREATE OR REPLACE PROCEDURE SILVER_ORDERDETAILS()
+RETURNS STRING
+LANGUAGE SQL
+AS
+$$
+BEGIN
+	
+    create TABLE IF NOT EXISTS DW.SILVER.ORDER_DETAILS (
+        ORDER_ID NUMBER(38,0) NOT NULL,
+        PRODUCT_ID NUMBER(38,0) NOT NULL,
+        UNIT_PRICE FLOAT NOT NULL,
+        QUANTITY NUMBER(38,0) NOT NULL,
+        DISCOUNT FLOAT NOT NULL,
+        DATA_EXTRACAO DATE
+    );
+
+	TRUNCATE TABLE DW.SILVER.ORDER_DETAILS;
+
+     -- Inicia uma transação
+    BEGIN TRANSACTION;
+
+    -- Insere os dados transformados na tabela DW.SILVER.ORDERDETAILS
+    INSERT INTO DW.SILVER.ORDER_DETAILS (ORDER_ID,PRODUCT_ID,UNIT_PRICE,QUANTITY,DISCOUNT,DATA_EXTRACAO)
+    SELECT COALESCE(ORDER_ID,-1), 
+        COALESCE(PRODUCT_ID, -1), 
+        COALESCE(UNIT_PRICE,0), 
+        COALESCE(QUANTITY,0), 
+        COALESCE(DISCOUNT,0), 
+        DATA_EXTRACAO
+    FROM DW.BRONZE.ORDER_DETAILS;
+
+    -- Finaliza a transação
+    COMMIT;
+
+    RETURN 'Dados transferidos e transformados com sucesso';
+
+EXCEPTION
+    WHEN OTHER THEN
+        -- Em caso de erro, realiza o rollback
+        ROLLBACK;
+        RETURN 'Erro durante a execução da procedure.';    
+
+END;
+$$;
+
+CALL SILVER_ORDERDETAILS();
