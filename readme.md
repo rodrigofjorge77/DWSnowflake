@@ -1,4 +1,4 @@
-# Iac Terraform and Databricks
+# DW Snowflake - Arquitetura Medalhão
 
 ## Table of Contents
 - [Overview](#overview)
@@ -8,24 +8,17 @@
 - [License](#license)
 
 ## Overview
-Infrastructure as Code (IaC) with Terraform, combined with distributed data processing on Databricks, 
-offers a scalable, efficient, and automated approach to manage and analyze data. By leveraging Terraform, 
-infrastructure deployments become repeatable and consistent, minimizing the risks of human error and 
-ensuring faster, reliable configurations. 
-Integrating this with Databricks’ powerful processing capabilities allows for robust data transformations 
-and analyses at scale, particularly beneficial for handling large datasets and optimizing workflows in cloud environments.
 
-In this architecture, raw sales data is initially uploaded by users to an AWS S3 bucket, providing a centralized 
-location for storage. From here, a PySpark script is executed on a Databricks cluster hosted in the AWS cloud. T
-his script performs several critical processing steps: first, it eliminates duplicate records to ensure data integrity. 
-It then fills in any empty columns to handle missing values. Following data cleaning, the script performs aggregations 
-by various dimensions, such as product, region, and sales method, creating valuable insights from the data. 
-Finally, the processed results are saved back into another S3 bucket, where they are readily accessible 
-for downstream analysis or reporting.
+Neste projeto:
+✅ Desenvolvi toda a arquitetura do DW, integrando diferentes camadas para organizar e otimizar o fluxo de dados.
+✅ Modelei o banco de dados no formato dimensional snowflake, utilizando como base o clássico Northwind Model Database da Microsoft.
+✅ Construí pipelines ETL/ELT no Apache Airflow, orquestrando todo o processo em containers Docker.
+✅ Carreguei e organizei os dados no banco Snowflake, explorando toda sua escalabilidade e performance.
+✅ Finalizei com a criação de um dashboard interativo no Power BI, onde os insights ganham vida!
 
 ## System Architecture
 
-![System Architecture](https://github.com/rodrigofjorge77/IaC-Databricks/blob/main/assets/DatabricksArchitecture.gif)
+![System Architecture](https://github.com/rodrigofjorge77/DWSnowflake/blob/main/Assets/arquitetura.png)
 
 #### The project is designed with the following components:
 
