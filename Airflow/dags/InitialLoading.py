@@ -440,8 +440,8 @@ with DAG(
         sql=silver_procedures,
     )
 
-    Gold_Full_Dim_Data = SnowflakeOperator(
-        task_id='Gold_Full_Dim_Data',
+    Gold_Full_Dim_Tempo = SnowflakeOperator(
+        task_id='Gold_Full_Dim_Tempo',
         snowflake_conn_id='snowflake_conn_id',  # Conexão configurada no Airflow
         sql="CALL DW.GOLD.PROC_DIM_TEMPO('1996-01-01', '1998-12-31');",
     )
@@ -449,7 +449,7 @@ with DAG(
     Gold_Full_Dim_Customers = SnowflakeOperator(
         task_id='Gold_Full_Dim_Customers',
         snowflake_conn_id='snowflake_conn_id',  # Conexão configurada no Airflow
-        sql='CALL DW.GOLD.PROC_DIM_CUSTOMER();',
+        sql='CALL DW.GOLD.PROC_DIM_CUSTOMERS();',
     )
 
     Gold_Full_Dim_Products = SnowflakeOperator(
@@ -458,14 +458,32 @@ with DAG(
         sql='CALL DW.GOLD.PROC_DIM_PRODUCTS();',
     )
 
+    Gold_Full_Dim_Employees = SnowflakeOperator(
+        task_id='Gold_Full_Dim_Employees',
+        snowflake_conn_id='snowflake_conn_id',  # Conexão configurada no Airflow
+        sql='CALL DW.GOLD.PROC_DIM_EMPLOYEES();',
+    )
+
+    Gold_Full_Dim_Orders = SnowflakeOperator(
+        task_id='Gold_Full_Dim_Orders',
+        snowflake_conn_id='snowflake_conn_id',  # Conexão configurada no Airflow
+        sql='CALL DW.GOLD.PROC_DIM_ORDERS();',
+    )
+
+    Gold_Full_Fato_Orders = SnowflakeOperator(
+        task_id='Gold_Full_Fato_Orders',
+        snowflake_conn_id='snowflake_conn_id',  # Conexão configurada no Airflow
+        sql='CALL DW.GOLD.PROC_FATO_ORDERS();',
+    )
+
     # Ponto de sincronização (aguardar os 3)
     wait1 = DummyOperator(task_id='wait1', trigger_rule='all_success')
     wait2 = DummyOperator(task_id='wait2', trigger_rule='all_success')
-    #wait3 = DummyOperator(task_id='wait3', trigger_rule='all_success')
+    wait3 = DummyOperator(task_id='wait3', trigger_rule='all_success')
     #wait4 = DummyOperator(task_id='wait4', trigger_rule='all_success')
 
     #Bronze_Full_Load >>  [Get_Data_Caterogies,Get_Data_Customers,Get_Data_Employees] >> wait1 >> [Get_Data_Orders,Get_Data_OrdersDetails,Get_Data_Products] >> wait2 >> [Get_Data_Region,Get_Data_Shippers,Get_Data_Suppliers] >> wait3 >> [Get_Data_Territories,Get_Data_EmployeeTerritories] >> Silver_Full_Load >> wait4 >> [Gold_Dim_Data,Gold_Dim_Customers,Gold_Dim_Products]
-    Bronze_Full_Load >>  [Get_Data_Caterogies,Get_Data_Customers,Get_Data_Employees,Get_Data_Orders,Get_Data_OrdersDetails,Get_Data_Products] >> wait1 >> [Get_Data_Region,Get_Data_Shippers,Get_Data_Suppliers,Get_Data_Territories,Get_Data_EmployeeTerritories] >> wait2 >> Silver_Full_Load >> [Gold_Full_Dim_Data,Gold_Full_Dim_Customers,Gold_Full_Dim_Products]
+    Bronze_Full_Load >>  [Get_Data_Caterogies,Get_Data_Customers,Get_Data_Employees,Get_Data_Orders,Get_Data_OrdersDetails,Get_Data_Products] >> wait1 >> [Get_Data_Region,Get_Data_Shippers,Get_Data_Suppliers,Get_Data_Territories,Get_Data_EmployeeTerritories] >> wait2 >> Silver_Full_Load >> [Gold_Full_Dim_Tempo,Gold_Full_Dim_Customers,Gold_Full_Dim_Products,Gold_Full_Dim_Employees,Gold_Full_Dim_Orders] >> wait3 >> Gold_Full_Fato_Orders
     
     
     
