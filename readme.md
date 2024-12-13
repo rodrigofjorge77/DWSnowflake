@@ -9,12 +9,12 @@
 
 ## Overview
 
-Neste projeto:
-✅ Desenvolvi toda a arquitetura do DW, integrando diferentes camadas para organizar e otimizar o fluxo de dados.
-✅ Modelei o banco de dados no formato dimensional snowflake, utilizando como base o clássico Northwind Model Database da Microsoft.
-✅ Construí pipelines ETL/ELT no Apache Airflow, orquestrando todo o processo em containers Docker.
-✅ Carreguei e organizei os dados no banco Snowflake, explorando toda sua escalabilidade e performance.
-✅ Finalizei com a criação de um dashboard interativo no Power BI, onde os insights ganham vida!
+Neste projeto:  
+✅ Desenvolvi toda a arquitetura do DW, integrando diferentes camadas para organizar e otimizar o fluxo de dados.  
+✅ Modelei o banco de dados no formato dimensional snowflake, utilizando como base o clássico Northwind Model Database da Microsoft.  
+✅ Construí pipelines ETL/ELT no Apache Airflow, orquestrando todo o processo em containers Docker.  
+✅ Carreguei e organizei os dados no banco Snowflake, explorando toda sua escalabilidade e performance.  
+✅ Finalizei com a criação de um dashboard interativo no Power BI, onde os insights ganham vida!  
 
 ## System Architecture
 
