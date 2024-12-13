@@ -20,7 +20,21 @@ Neste projeto:
 
 ![System Architecture](https://github.com/rodrigofjorge77/DWSnowflake/blob/main/Assets/arquitetura.png)
 
-#### The project is designed with the following components:
+## Data Source Model in Postgres
+
+![System Architecture](https://github.com/rodrigofjorge77/DWSnowflake/blob/main/Assets/schema%20das%20tabelas%20na%20orgiem.png)
+
+## Airflow Pipeline
+
+![System Architecture](https://github.com/rodrigofjorge77/DWSnowflake/blob/main/Assets/Airflow_Full-Load.png)
+
+## Star Schema Snowfalke Model
+
+![System Architecture](https://github.com/rodrigofjorge77/DWSnowflake/blob/main/Assets/DW%20Snowflake%20Model.png)
+
+## Power BI Dashboard
+
+![System Architecture](https://github.com/rodrigofjorge77/DWSnowflake/blob/main/Assets/DW%20Dashboard%20PowerBI.png)
 
 - **Data Source**: File nike_dt_s3.csv got from https://www.kaggle.com/
 - **AWS S3**: Used for storage files
@@ -29,14 +43,16 @@ Neste projeto:
 ## Technologies
 
 - Docker
-- Terraform
-- PySpark
+- Postgres
+- Airflow
+- Snowflake
+- PowerBI
 
 ## Getting Started
 
 1. Clone the repository:
     ```bash
-    git clone https://github.com/rodrigofjorge77/IaC-Databricks.git
+    git clone https://github.com/rodrigofjorge77/DWSnowflake.git
     ```
 
 2. Navigate to the project directory:
