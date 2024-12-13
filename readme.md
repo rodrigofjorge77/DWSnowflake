@@ -28,7 +28,7 @@ Neste projeto:
 
 ![System Architecture](https://github.com/rodrigofjorge77/DWSnowflake/blob/main/Assets/Airflow_Full-Load.png)
 
-## Star Schema Snowfalke Model
+## Star Schema Snowflake Model
 
 ![System Architecture](https://github.com/rodrigofjorge77/DWSnowflake/blob/main/Assets/DW%20Snowflake%20Model.png)
 
