@@ -36,10 +36,6 @@ Neste projeto:
 
 ![System Architecture](https://github.com/rodrigofjorge77/DWSnowflake/blob/main/Assets/DW%20Dashboard%20PowerBI.png)
 
-- **Data Source**: File nike_dt_s3.csv got from https://www.kaggle.com/
-- **AWS S3**: Used for storage files
-- **Databricks**: Responsible for distributed processing
-
 ## Technologies
 
 - Docker
@@ -55,15 +51,12 @@ Neste projeto:
     git clone https://github.com/rodrigofjorge77/DWSnowflake.git
     ```
 
-2. Navigate to the project directory:
-    ```bash
-    cd Terraform
-    ```
-3. Run Docker Compose
-    ```bash
-    docker build -t databricks-terraform-image .
-    docker run -dit --name databricks -v ./IaC:/iac databricks-terraform-image /bin/bash
-    ```
+2. Install Airflow:  
+
+    https://airflow.apache.org/docs/apache-airflow/stable/installation/index.html
+   
+3. Create an Account in Snowflake  
+    https://signup.snowflake.com/?utm_cta=trial-en-www-homepage-top-right-nav-ss-evg&_ga=2.18470073.1079222840.1734114122-480247440.1733135053
 
 ## License
 
